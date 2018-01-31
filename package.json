@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/zwpleasant/liri-node-app/issues"
   },
-  "homepage": "https://github.com/zwpleasant/liri-node-app#readme"
+  "homepage": "https://github.com/zwpleasant/liri-node-app#readme",
+  "dependencies": {
+    "dotenv": "^5.0.0"
+  }
 }
