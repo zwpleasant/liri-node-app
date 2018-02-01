@@ -4,11 +4,11 @@ var keys = require("./keys.js");
 // take the user's input from the command line
 var userInput = process.argv[2];
 
-// switch-case will direct which function gets ran
+// switch-case will direct which user provides input to Liri
 switch(userInput) {
   // command example: node liri.js my-tweets
   case "my-tweets":
-    getTweet();
+    getTweets();
     break;
 
   // command example: node liri.js spotify-this-song '<song name here>'
@@ -28,13 +28,24 @@ switch(userInput) {
 }
 
 
-// define all of the functions used within the switch-case
+// define all functions used within the switch-case
 
 // function to grab tweets from user input
 // eventual output: the last 20 tweets that were logged and when they were
-function getTweet() {
+function getTweets() {
   var Twitter = require("twitter");
   var client = new Twitter(keys.twitter);
+  // set the account that we want to grab tweets from
+  var account = {
+    screen_name: "bobBop10",
+    count: 1
+  }
+  // code that gets the data and shows the tweets
+  client.get("statuses/user_timeline", account, function(error, tweets, response) {
+    if (error) throw error;
+    console.log("Message: " + (tweets[0].text));
+    console.log("Created: " + (tweets[0].created_at));
+  })
 }
 
 // function to grab a song from user input
