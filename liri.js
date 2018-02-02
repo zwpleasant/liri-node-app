@@ -24,6 +24,10 @@ switch(userInput) {
   // command example: node liri.js do-what-it-says
   case "do-what-it-says":
     // eventual output: case should take the text from random.txt and then use it to call one of LIRI's commands
+    break;
+  // if unrecognized command, output this statement
+  default:
+    console.log("Try another command!");
 
 }
 
@@ -52,11 +56,24 @@ function getTweets() {
 }
 
 // function to grab a song from user input
-// eventual output: Artist(s), song's name, preview link of the song from Spotify, and  album that the song is from
+// eventual output: Artist(s), song name, preview link of the song from Spotify, and  album that the song is from
 function getSong() {
   //import the spotify package
-  var Spotify = require("node-spotify-api");
-  var client = new Spotify(keys.spotify);
+  var Spotify = require('node-spotify-api');
+  var spotify = new Spotify(keys.spotify);
+  // set up call to Spotify
+  var song = process.argv[3];
+  console.log(song);
+  spotify.search({ type: 'track', query: song }, function(err, data) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+    }
+  // output the Artist(s), song name, preview link, and album.
+  console.log("Artist: "+ data.tracks.items[0].artists[0].name);
+  console.log("Song Name: " + data.tracks.items[0].name);
+  console.log("Preview: "+ data.tracks.items[0].preview_url);
+  console.log("Album: "+ data.tracks.items[0].album.name);
+  });
 }
 
 //function to grab a movie from user input
