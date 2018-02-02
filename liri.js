@@ -33,24 +33,28 @@ switch(userInput) {
 // function to grab tweets from user input
 // eventual output: the last 20 tweets that were logged and when they were
 function getTweets() {
+  // import the twitter package
   var Twitter = require("twitter");
   var client = new Twitter(keys.twitter);
   // set the account that we want to grab tweets from
   var account = {
     screen_name: "bobBop10",
-    count: 1
+    count: 20
   }
   // code that gets the data and shows the tweets
   client.get("statuses/user_timeline", account, function(error, tweets, response) {
     if (error) throw error;
-    console.log("Message: " + (tweets[0].text));
-    console.log("Created: " + (tweets[0].created_at));
+      for (var j = 0; j < tweets.length; j++){
+        console.log("Message: " + (tweets[j].text));
+        console.log("Created: " + (tweets[j].created_at));
+      }
   })
 }
 
 // function to grab a song from user input
 // eventual output: Artist(s), song's name, preview link of the song from Spotify, and  album that the song is from
 function getSong() {
+  //import the spotify package
   var Spotify = require("node-spotify-api");
   var client = new Spotify(keys.spotify);
 }
@@ -58,6 +62,7 @@ function getSong() {
 //function to grab a movie from user input
 // eventual output: Title of the movie, Year the movie came out, IMDB Rating of the movie, Rotten Tomatoes Rating of the movie, Country where the movie was produced, Language of the movie, Plot of the movie, and Actors in the movie.
 function getMovie() {
+  // import the request package
   var request = require("request");
   // Store all of the arguments in an array
   var nodeArgs = process.argv;
@@ -74,6 +79,7 @@ function getMovie() {
   }
   // Then run a request to the OMDB API with the movie specified
   var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+  console.log(queryUrl);
   request(queryUrl, function(error, response, body) {
     // If the request is successful
     if (!error && response.statusCode === 200) {
