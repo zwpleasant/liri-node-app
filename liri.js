@@ -23,8 +23,9 @@ switch(userInput) {
 
   // command example: node liri.js do-what-it-says
   case "do-what-it-says":
-    // eventual output: case should take the text from random.txt and then use it to call one of LIRI's commands
+    doWhatItSays();
     break;
+
   // if unrecognized command, output this statement
   default:
     console.log("Try another command!");
@@ -51,6 +52,8 @@ function getTweets() {
       for (var j = 0; j < tweets.length; j++){
         console.log("Message: " + (tweets[j].text));
         console.log("Created: " + (tweets[j].created_at));
+        // add someting to separate each tweet
+        console.log("----------------------------------");
       }
   })
 }
@@ -110,5 +113,24 @@ function getMovie() {
       console.log("Plot: " + JSON.parse(body).Plot);
       console.log("Actors: " + JSON.parse(body).Actors);
     }
+  });
+}
+
+//function to grab a movie from user input
+// eventual output: case should take the text from random.txt and then use it to call one of LIRI's commands
+function doWhatItSays() {
+  // import the required pacakage
+  var fs = require("fs");
+  fs.readFile("random.txt", "utf8", function(error, data) {
+    // If the code experiences any errors it will log the error to the console.
+    if (error) {
+      return console.log(error);
+    }
+    // We will then print the contents of data
+    console.log(data);
+    // Then split it by commas (to make it more readable)
+    var dataArr = data.split(",").join(" ");
+    // Log the text for a command
+    console.log(`node liri-node-app ${dataArr}`);
   });
 }
