@@ -32,7 +32,6 @@ switch(userInput) {
 
 }
 
-
 // define all functions used within the switch-case
 
 // function to grab tweets from user input
@@ -65,18 +64,43 @@ function getSong() {
   var Spotify = require('node-spotify-api');
   var spotify = new Spotify(keys.spotify);
   // set up call to Spotify
-  var song = process.argv[3];
-  console.log(song);
-  spotify.search({ type: 'track', query: song }, function(err, data) {
+  if (process.argv[3]=== undefined) {
+    spotify.search({ type: 'track', query: 'Ace of Base' }, function(err, data) {
+      if (err) {
+        return console.log('Error occurred: ' + err);
+      }
+    // output the Artist(s), song name, preview link, and album.
+    console.log("Artist: "+ data.tracks.items[0].artists[0].name);
+    console.log("Song Name: " + data.tracks.items[0].name);
+    console.log("Preview: "+ data.tracks.items[0].preview_url);
+    console.log("Album: "+ data.tracks.items[0].album.name);
+    });
+  } else {
+  // Store all of the arguments in an array
+  var nodeSongArgs = process.argv;
+  // Create an empty variable for holding the song name
+  var songName = "";
+  // Loop through all the words in the node argument
+  for (var i = 3; i < nodeSongArgs.length; i++) {
+    if (i > 3 && i < nodeSongArgs.length) {
+      songName = songName + "+" + nodeSongArgs[i];
+    }
+    else {
+      songName += nodeSongArgs[i];
+    }
+  }
+  console.log(songName);
+  spotify.search({ type: 'track', query: songName }, function(err, data) {
     if (err) {
       return console.log('Error occurred: ' + err);
     }
-  // output the Artist(s), song name, preview link, and album.
-  console.log("Artist: "+ data.tracks.items[0].artists[0].name);
-  console.log("Song Name: " + data.tracks.items[0].name);
-  console.log("Preview: "+ data.tracks.items[0].preview_url);
-  console.log("Album: "+ data.tracks.items[0].album.name);
-  });
+    // output the Artist(s), song name, preview link, and album.
+    console.log("Artist: "+ data.tracks.items[0].artists[0].name);
+    console.log("Song Name: " + data.tracks.items[0].name);
+    console.log("Preview: "+ data.tracks.items[0].preview_url);
+    console.log("Album: "+ data.tracks.items[0].album.name);
+    });
+  }
 }
 
 //function to grab a movie from user input
@@ -84,36 +108,55 @@ function getSong() {
 function getMovie() {
   // import the request package
   var request = require("request");
-  // Store all of the arguments in an array
-  var nodeArgs = process.argv;
-  // Create an empty variable for holding the movie name
-  var movieName = "";
-  // Loop through all the words in the node argument
-  for (var i = 3; i < nodeArgs.length; i++) {
-    if (i > 3 && i < nodeArgs.length) {
-      movieName = movieName + "+" + nodeArgs[i];
+  if (process.argv[3] === undefined) {
+    var queryUrl = "http://www.omdbapi.com/?t=" + "Mr." + "Nobody" + "&y=&plot=short&apikey=trilogy";
+    console.log(queryUrl);
+    request(queryUrl, function(error, response, body) {
+      // If the request is successful
+      if (!error && response.statusCode === 200) {
+        // Parse the body of the site and recover necessary output
+        console.log("Title: " + JSON.parse(body).Title);
+        console.log("Release Year: " + JSON.parse(body).Year);
+        console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+        console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
+        console.log("Production Country: " + JSON.parse(body).County);
+        console.log("Language: " + JSON.parse(body).Language);
+        console.log("Plot: " + JSON.parse(body).Plot);
+        console.log("Actors: " + JSON.parse(body).Actors);
+      }
+    });
+  } else {
+    // Store all of the arguments in an array
+    var nodeArgs = process.argv;
+    // Create an empty variable for holding the movie name
+    var movieName = "";
+    // Loop through all the words in the node argument
+    for (var i = 3; i < nodeArgs.length; i++) {
+      if (i > 3 && i < nodeArgs.length) {
+        movieName = movieName + "+" + nodeArgs[i];
+      }
+      else {
+        movieName += nodeArgs[i];
+      }
     }
-    else {
-      movieName += nodeArgs[i];
-    }
+    // Then run a request to the OMDB API with the movie specified
+    var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+    console.log(queryUrl);
+    request(queryUrl, function(error, response, body) {
+      // If the request is successful
+      if (!error && response.statusCode === 200) {
+        // Parse the body of the site and recover necessary output
+        console.log("Title: " + JSON.parse(body).Title);
+        console.log("Release Year: " + JSON.parse(body).Year);
+        console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+        console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
+        console.log("Production Country: " + JSON.parse(body).County);
+        console.log("Language: " + JSON.parse(body).Language);
+        console.log("Plot: " + JSON.parse(body).Plot);
+        console.log("Actors: " + JSON.parse(body).Actors);
+      }
+    });
   }
-  // Then run a request to the OMDB API with the movie specified
-  var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-  console.log(queryUrl);
-  request(queryUrl, function(error, response, body) {
-    // If the request is successful
-    if (!error && response.statusCode === 200) {
-      // Parse the body of the site and recover necessary output
-      console.log("Title: " + JSON.parse(body).Title);
-      console.log("Release Year: " + JSON.parse(body).Year);
-      console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
-      console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
-      console.log("Production Country: " + JSON.parse(body).County);
-      console.log("Language: " + JSON.parse(body).Language);
-      console.log("Plot: " + JSON.parse(body).Plot);
-      console.log("Actors: " + JSON.parse(body).Actors);
-    }
-  });
 }
 
 //function to grab a movie from user input
