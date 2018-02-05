@@ -76,29 +76,28 @@ function getSong() {
     console.log("Album: "+ data.tracks.items[0].album.name);
     });
   } else {
-  // Store all of the arguments in an array
-  var nodeSongArgs = process.argv;
-  // Create an empty variable for holding the song name
-  var songName = "";
-  // Loop through all the words in the node argument
-  for (var i = 3; i < nodeSongArgs.length; i++) {
-    if (i > 3 && i < nodeSongArgs.length) {
-      songName = songName + "+" + nodeSongArgs[i];
+    // Store all of the arguments in an array
+    var nodeSongArgs = process.argv;
+    // Create an empty variable for holding the song name
+    var songName = "";
+    // Loop through all the words in the node argument
+    for (var i = 3; i < nodeSongArgs.length; i++) {
+      if (i > 3 && i < nodeSongArgs.length) {
+        songName = songName + "+" + nodeSongArgs[i];
+      }
+      else {
+        songName += nodeSongArgs[i];
+      }
     }
-    else {
-      songName += nodeSongArgs[i];
-    }
-  }
-  console.log(songName);
-  spotify.search({ type: 'track', query: songName }, function(err, data) {
-    if (err) {
-      return console.log('Error occurred: ' + err);
-    }
-    // output the Artist(s), song name, preview link, and album.
-    console.log("Artist: "+ data.tracks.items[0].artists[0].name);
-    console.log("Song Name: " + data.tracks.items[0].name);
-    console.log("Preview: "+ data.tracks.items[0].preview_url);
-    console.log("Album: "+ data.tracks.items[0].album.name);
+    spotify.search({ type: 'track', query: songName }, function(err, data) {
+      if (err) {
+        return console.log('Error occurred: ' + err);
+      }
+      // output the Artist(s), song name, preview link, and album.
+      console.log("Artist: "+ data.tracks.items[0].artists[0].name);
+      console.log("Song Name: " + data.tracks.items[0].name);
+      console.log("Preview: "+ data.tracks.items[0].preview_url);
+      console.log("Album: "+ data.tracks.items[0].album.name);
     });
   }
 }
@@ -108,9 +107,9 @@ function getSong() {
 function getMovie() {
   // import the request package
   var request = require("request");
+  // call to OMDB API
   if (process.argv[3] === undefined) {
     var queryUrl = "http://www.omdbapi.com/?t=" + "Mr." + "Nobody" + "&y=&plot=short&apikey=trilogy";
-    console.log(queryUrl);
     request(queryUrl, function(error, response, body) {
       // If the request is successful
       if (!error && response.statusCode === 200) {
@@ -141,7 +140,6 @@ function getMovie() {
     }
     // Then run a request to the OMDB API with the movie specified
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-    console.log(queryUrl);
     request(queryUrl, function(error, response, body) {
       // If the request is successful
       if (!error && response.statusCode === 200) {
@@ -169,11 +167,17 @@ function doWhatItSays() {
     if (error) {
       return console.log(error);
     }
-    // We will then print the contents of data
-    console.log(data);
     // Then split it by commas (to make it more readable)
-    var dataArr = data.split(",").join(" ");
-    // Log the text for a command
-    console.log(`node liri-node-app ${dataArr}`);
+    var dataArr = data.split(",");
+    // if statement to run the other 3 functions
+    if (dataArr[0] === "spotify-this-song") {
+      process.argv[3] = dataArr[1];
+      getSong();
+    } else if (dataArr[0] === "my-tweets") {
+      getTweets();
+    } else {
+      process.argv[3] === dataArr[1];
+      getMovie();
+    }
   });
 }
